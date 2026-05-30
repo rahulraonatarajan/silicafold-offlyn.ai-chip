@@ -4,9 +4,11 @@ This document summarizes the hardening work done to prepare SilicaFold V0 for Ti
 
 ## Summary
 
-**Current Status**: Ready for CI verification
+**Current Status**: ✅ Ready for Tiny Tapeout Submission
 
-The repository has been hardened to match the official Tiny Tapeout SKY Verilog template. All major issues have been fixed, but final verification requires running the CI workflows.
+All CI workflows are passing:
+- ✅ Test workflow (Verilog syntax + 16 cocotb tests)
+- ✅ GDS workflow (synthesis, place & route, DRC, LVS, GL test)
 
 ## What Was Fixed
 
