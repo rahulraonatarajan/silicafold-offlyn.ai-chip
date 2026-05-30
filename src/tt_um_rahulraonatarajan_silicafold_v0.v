@@ -42,17 +42,19 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
     // =========================================================================
     // uio_oe Configuration  
     // Lower nibble [3:0] are inputs, upper nibble [7:4] are outputs
-    // Use registered outputs for proper routing in ASIC flow
-    // The register value is always 0xF0 (upper nibble = outputs)
+    // Use combinational logic through ena to create routable paths
+    // This prevents synthesis from creating unroutable tie cells
+    // When ena=1: lower nibble = ~1 = 0 (input mode)
+    //             upper nibble = 1 = 1 (output mode)  
     // =========================================================================
-    reg [7:0] uio_oe_r;
-    always @(posedge clk) begin
-        if (!rst_n)
-            uio_oe_r <= 8'b1111_0000;
-        else
-            uio_oe_r <= 8'b1111_0000;
-    end
-    assign uio_oe = uio_oe_r;
+    assign uio_oe[0] = ~ena;  // 0 when powered (input mode)
+    assign uio_oe[1] = ~ena;  // 0 when powered (input mode)
+    assign uio_oe[2] = ~ena;  // 0 when powered (input mode)
+    assign uio_oe[3] = ~ena;  // 0 when powered (input mode)
+    assign uio_oe[4] = ena;   // 1 when powered (output mode)
+    assign uio_oe[5] = ena;   // 1 when powered (output mode)
+    assign uio_oe[6] = ena;   // 1 when powered (output mode)
+    assign uio_oe[7] = ena;   // 1 when powered (output mode)
 
     // =========================================================================
     // TensorTile Instance
@@ -157,7 +159,7 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
     // =========================================================================
     // Unused Signal Handling
     // dbg_mode is reserved for future use
-    // ena is used for uio_oe output enable
+    // ena is used for uio_oe configuration
     // =========================================================================
     wire _unused = &{dbg_mode, 1'b0};
 
