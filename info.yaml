@@ -20,12 +20,8 @@ project:
     - "tt_um_rahulraonatarajan_silicafold_v0.v"
 
 # Pinout configuration
-# ui_in: Directly directly directly directly directly directly directly directly inputs
-# uo_out: Directly directly directly directly directly directly directly directly outputs
-# uio: Directly directly directly directly directly directly directly directly bidirectional IOs
-
 pinout:
-  # Directly directly directly directly directly directly directly directly inputs: command and data nibbles
+  # Dedicated inputs: command and data nibbles
   ui[0]: "CMD0"
   ui[1]: "CMD1"
   ui[2]: "CMD2"
@@ -35,7 +31,7 @@ pinout:
   ui[6]: "DIN2"
   ui[7]: "DIN3"
 
-  # Directly directly directly directly directly directly directly directly outputs: status bits and output data
+  # Dedicated outputs: status bits and output data
   # When BLOCK_SELECT=0 (TensorTile): busy, done, overflow, context_valid, result[3:0]
   # When BLOCK_SELECT=1 (PolicyGate): allow, block, require_human, log_required, policy_out[3:0]
   uo[0]: "T_BUSY_OR_P_ALLOW"
