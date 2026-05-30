@@ -39,8 +39,8 @@ jobs:
       # The version should correspond to your submission shuttle (e.g., tt08, tt09).
       # =====================================================================
       - name: Build GDS with Tiny Tapeout
-        uses: TinyTapeout/tt-gds-action@main
-        # Using @main for latest fixes; switch to shuttle tag for submission
+        uses: TinyTapeout/tt-gds-action@tt09
+        # Using tt09 for shuttle compatibility
 
       # =====================================================================
       # Artifact Upload

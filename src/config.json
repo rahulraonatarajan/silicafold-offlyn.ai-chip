@@ -1,5 +1,5 @@
 {
+    "FP_SIZING": "absolute",
     "GRT_ALLOW_CONGESTION": true,
-    "GRT_OVERFLOW_ITERS": 100,
-    "PL_RESIZER_BUFFER_OUTPUT_PORTS": true
+    "GRT_OVERFLOW_ITERS": 100
 }
