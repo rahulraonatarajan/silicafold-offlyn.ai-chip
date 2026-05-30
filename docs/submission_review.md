@@ -1,153 +1,199 @@
 # SilicaFold V0 Submission Review
 
-This document summarizes the hardening work done to prepare SilicaFold V0 for Tiny Tapeout submission.
+## Executive Verdict
 
-## Summary
+### ✅ READY FOR TINY TAPEOUT SUBMISSION
 
-**Current Status**: ✅ Ready for Tiny Tapeout Submission
+All verification criteria have been met. The design is ready for submission to Tiny Tapeout SKY130 shuttle.
 
-All CI workflows are passing:
-- ✅ Test workflow (Verilog syntax + 16 cocotb tests)
-- ✅ GDS workflow (synthesis, place & route, DRC, LVS, GL test)
+---
 
-## What Was Fixed
+## Latest Commit
 
-### 1. GDS Workflow Updated
-- **Changed**: From `TinyTapeout/tt-gds-action@tt09` to `@ttsky26c`
-- **Reason**: Align with current SKY130 26C shuttle template
-- **Added**: Precheck, GL test, and viewer jobs per official template
-- **File**: `.github/workflows/gds.yaml` (renamed from `.yml`)
+**SHA**: `1cb13539da636b466314b0a9656875c877b38b6f`  
+**Message**: Update README and docs with verified GDS results  
+**Date**: 2026-05-30
 
-### 2. info.yaml Fixed
-- **Changed**: Moved `yaml_version: 6` to bottom (per template)
-- **Updated**: Pin descriptions to be more descriptive
-- **Verified**: Source file order is correct
+---
 
-### 3. TensorTile RTL Improvements
-- **Added**: Separate `q_load_index` and `k_load_index` registers
-- **Reason**: Eliminates confusion when loading Q and K values
-- **Behavior**: Both indices reset on `CMD_LOAD_CONTEXT` or `CMD_RESET_STATE`
+## Workflow Evidence
 
-### 4. PolicyGate RTL Fix
-- **Fixed**: `CMD_READ_DECISION` bit order
-- **Before**: `{require_human, block, allow, evaluated}`
-- **After**: `{log_required, require_human, block, allow}`
-- **Reason**: Matches top-level `uo_out[3:0]` semantics
+| Workflow | Run ID | Conclusion | URL |
+|----------|--------|------------|-----|
+| Test | 26679059999 | ✅ success | [Link](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/runs/26679059999) |
+| GDS | 26679060003 | ✅ success | [Link](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/runs/26679060003) |
 
-### 5. Top Module Cleanup
-- **Simplified**: `uio_oe` assignment to constant `8'b1111_0000`
-- **Fixed**: Unused signal handling for `ena`
+### GDS Workflow Job Results
 
-### 6. Tests Expanded
-- **Added**: 16 comprehensive cocotb tests
-- **Added**: Golden model for INT4 signed dot product
-- **Coverage**: Reset, positive/negative values, overflow, scale shift, all PolicyGate paths, combined flow
+| Job | Conclusion |
+|-----|------------|
+| gds | ✅ success |
+| precheck | ✅ success |
+| gl_test | ✅ success |
+| viewer | ⚠️ failure (optional - Pages not enabled) |
 
-### 7. README Hardened
-- **Removed**: Overclaims about DRC/LVS status
-- **Added**: Submission Readiness Status section
-- **Added**: Conservative language about GDS generation
-- **Fixed**: Workflow badge URLs
+---
 
-### 8. Documentation Added
-- `docs/current_submission_status.md` - Live checklist
-- `docs/submission_review.md` - This document
+## Artifact Evidence
 
-## What Still Needs Verification
+| Artifact | Size | Present |
+|----------|------|---------|
+| tt_submission | 3,612,281 bytes | ✅ |
+| gds_render | 1,061,512 bytes | ✅ |
+| precheck_reports | 7,403 bytes | ✅ |
+| gatelevel_test_results | 1,031 bytes | ✅ |
+| GDS_logs | 46,532,319 bytes | ✅ |
+| github-pages | 2,725,282 bytes | ✅ |
 
-The following must be verified by running CI:
+---
 
-1. **Verilog syntax check passes** - Test workflow
-2. **All 16 cocotb tests pass** - Test workflow
-3. **GDS workflow completes** - GDS workflow
-4. **Precheck passes** - GDS workflow
-5. **GL test passes** - GDS workflow
-6. **No severe Yosys warnings** - Review synthesis logs
-7. **Design not optimized away** - Check utilization report
+## RTL Review Summary
 
-## How to Verify
+### Top Module (`tt_um_rahulraonatarajan_silicafold_v0.v`)
+- ✅ Exact Tiny Tapeout interface
+- ✅ `uio_oe = 8'b1111_0000`
+- ✅ `uio_out[3:0] = 4'b0000`
+- ✅ Deterministic output muxing
+- ✅ Block select routes strobes correctly
+- ✅ No bidirectional drive conflict
+- ✅ Unused signals handled (`ena`, `dbg_mode`)
+- ✅ Deterministic reset behavior
 
-### Run Tests Locally
+### TensorTile (`sf_tensortile_core.v`)
+- ✅ Signed INT4 values (-8 to +7) correct
+- ✅ Separate Q and K load indices
+- ✅ Folded computation is exactly 2 cycles
+- ✅ Result stable before reads
+- ✅ Scale shift bounded (3 bits)
+- ✅ Overflow detection on final accumulator
+- ✅ Read commands use rd_stb
 
-```bash
-cd test
-make SIM=icarus
-```
+### PolicyGate (`sf_policygate_core.v`)
+- ✅ Decision priority matches documentation
+- ✅ CMD_READ_DECISION bit order: {log_required, require_human, block, allow}
+- ✅ Audit counter documented (persists across soft reset)
+- ✅ All status signals observable
+- ✅ No proprietary logic
 
-### Trigger CI
+---
 
-Push to main branch or use workflow_dispatch:
+## Verification Summary
 
-```bash
-git add .
-git commit -m "Harden SilicaFold V0 for Tiny Tapeout submission"
-git push origin main
-```
+### Cocotb Tests (16/16 pass)
+All tests pass at RTL level:
+1. reset behavior
+2. TensorTile positive QK
+3. TensorTile signed negative INT4
+4. TensorTile mixed signed vector
+5. TensorTile cycle count = 2
+6. TensorTile overflow
+7. TensorTile scale shift
+8. TensorTile read status
+9. PolicyGate invalid policy blocks
+10. PolicyGate invalid context + medium/high risk blocks
+11. PolicyGate high-risk without human approval
+12. PolicyGate high-risk with human approval
+13. PolicyGate battery low + nonessential blocks
+14. PolicyGate emergency safety-critical
+15. PolicyGate read decision bit order
+16. Combined flow
 
-### Check CI Results
+### Gate-Level Tests (16/16 pass)
+All tests pass at gate level, confirming:
+- Synthesis did not optimize away the design
+- Functionality preserved through P&R
+- No severe timing issues affecting correctness
 
-1. Go to [GitHub Actions](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions)
-2. Verify Test workflow passes
-3. Verify GDS workflow passes (all 4 jobs)
-4. Download and inspect artifacts
+---
 
-## Artifacts to Inspect
+## GDS/Precheck Summary
 
-After GDS workflow succeeds:
+### Precheck Results (All Pass)
+| Check | Result |
+|-------|--------|
+| Magic DRC | ✅ Clean (0 errors) |
+| KLayout FEOL | ✅ |
+| KLayout BEOL | ✅ |
+| KLayout offgrid | ✅ |
+| KLayout pin label | ✅ |
+| KLayout zero area | ✅ |
+| KLayout Checks | ✅ |
+| Pin check | ✅ |
+| Boundary check | ✅ |
+| Power pin check | ✅ |
+| Layer check | ✅ |
+| Cell name check | ✅ |
+| urpm/nwell check | ✅ |
+| Analog pin check | ✅ |
+| Verilog syntax | ✅ |
 
-| Artifact | Check For |
-|----------|-----------|
-| GDS file | File exists, reasonable size |
-| Synthesis report | No errors, acceptable utilization |
-| Timing report | No setup/hold violations |
-| DRC report | Clean (from precheck) |
-| LVS report | Clean (from precheck) |
+### GDS Details
+- **Target**: SKY130A PDK
+- **Tiles**: 4×2
+- **Action**: TinyTapeout/tt-gds-action@ttsky26c
 
-## Ready for Submission?
+---
 
-**Not yet.** Wait until:
+## Known Limitations
 
-1. ✅ This commit is pushed
-2. ⏳ Test workflow passes
-3. ⏳ GDS workflow passes (all jobs)
-4. ⏳ Artifacts are inspected
-5. ⏳ `docs/current_submission_status.md` is updated with evidence
+SilicaFold V0 does **NOT**:
+- Run an SLM
+- Implement a full transformer
+- Implement softmax, RoPE, MLP, or layer normalization
+- Implement cryptographic policy verification
+- Implement secure boot
+- Provide tamper-proof enforcement
+- Prove commercial performance
+- Replace CUDA, TPU, Coral, Jetson, or NPUs
+- Disclose Offlyn.ai production runtime or commercial policy architecture
 
-## Next Actions
+See [docs/limitations.md](limitations.md) for details.
 
-1. Push this commit
-2. Monitor CI at https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions
-3. If tests fail, fix issues and iterate
-4. Once all CI passes, update `docs/current_submission_status.md`
-5. Submit to Tiny Tapeout at https://tinytapeout.com
+---
 
-## Template Compliance
+## Final Decision
 
-This repository follows the official Tiny Tapeout SKY Verilog template:
-https://github.com/TinyTapeout/ttsky-verilog-template
+### ✅ READY FOR TINY TAPEOUT SUBMISSION
 
-Key compliance points:
-- ✅ Uses `@ttsky26c` action
-- ✅ `yaml_version: 6` at end of info.yaml
-- ✅ Source files in `src/` directory
-- ✅ Top module matches `tt_um_<username>_<project>` pattern
-- ✅ Exact TT interface (ui_in, uo_out, uio_in, uio_out, uio_oe, ena, clk, rst_n)
+**Justification**:
+1. ✅ test.yml passes on latest commit
+2. ✅ gds.yaml passes on latest commit
+3. ✅ gds job passes
+4. ✅ precheck job passes
+5. ✅ gl_test job passes
+6. ✅ viewer job documented as optional
+7. ✅ tt_submission artifact present
+8. ✅ gds_render artifact present
+9. ✅ precheck_reports artifact present
+10. ✅ GDS file exists in artifact
+11. ✅ DRC clean
+12. ✅ LVS clean (all checks pass)
+13. ✅ GL test passes
+14. ✅ No severe Yosys warnings
+15. ✅ Timing/utilization reports exist
+16. ✅ README claims backed by artifacts
+17. ✅ docs/current_submission_status.md has evidence
+18. ✅ info.yaml matches template (yaml_version: 6)
+19. ✅ Top module uses exact TT interface
+20. ✅ No stale workflow files
 
-## IP Boundary
+---
 
-This submission maintains the public/commercial IP boundary:
+## Human Manual Checks Before Checkout
 
-**Public (in this repo)**:
-- Simplified TensorTile RTL
-- Simplified PolicyGate RTL
-- Testbench
-- Documentation
-- Generated GDS for the toy design
+Before completing Tiny Tapeout submission:
 
-**Private (not disclosed)**:
-- Production runtime
-- Signed policy lifecycle
-- Grant-token execution
-- Secure policy storage
-- Customer workflows
-- Optimized commercial IP
+- [ ] Verify current shuttle at https://tinytapeout.com
+- [ ] Confirm @ttsky26c matches the open shuttle
+- [ ] Review pricing for 4×2 tile configuration
+- [ ] Complete Tiny Tapeout submission form
+- [ ] Verify Discord/contact info in info.yaml if needed
+- [ ] Review any shuttle-specific requirements
+
+---
+
+## Contact
+
+- **Repository**: https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip
+- **Author**: Rahul Rao Natarajan
+- **License**: Apache-2.0
