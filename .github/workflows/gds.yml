@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gds
-          path: runs/wokwi/results/final/gds/
+          path: runs/wokwi/final/gds/
           retention-days: 90
 
       - name: Upload full run artifacts
@@ -72,8 +72,8 @@ jobs:
         with:
           name: reports
           path: |
-            runs/wokwi/reports/
-            runs/wokwi/results/
+            runs/wokwi/final/
+            runs/wokwi/**/reports/
           retention-days: 30
 
   # =========================================================================
