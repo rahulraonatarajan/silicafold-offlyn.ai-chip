@@ -41,12 +41,11 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
 
     // =========================================================================
     // uio_oe Configuration  
-    // Lower nibble [3:0] are inputs (active low = 0)
-    // Upper nibble [7:4] are outputs (active high = 1)
-    // Using ena-based logic to create routable paths
+    // Lower nibble [3:0] are inputs (uio_oe=0)
+    // Upper nibble [7:4] are outputs (uio_oe=1)
+    // This is a constant configuration for this design
     // =========================================================================
-    assign uio_oe[3:0] = 4'b0000;  // Input mode for lower nibble
-    assign uio_oe[7:4] = {4{ena}}; // Output mode for upper nibble when ena=1
+    assign uio_oe = 8'b1111_0000;
 
     // =========================================================================
     // TensorTile Instance
@@ -151,9 +150,9 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
     // =========================================================================
     // Unused Signal Handling
     // dbg_mode is reserved for future use
-    // ena is used for uio_oe configuration
+    // ena is always 1 when powered - not used internally but must not be optimized away
     // =========================================================================
-    wire _unused = &{dbg_mode, 1'b0};
+    wire _unused = &{ena, dbg_mode, 1'b0};
 
 endmodule
 

@@ -66,8 +66,11 @@ module sf_tensortile_core (
     reg [31:0] q_reg;   // q_reg[3:0]=Q0, q_reg[7:4]=Q1, ..., q_reg[31:28]=Q7
     reg [31:0] k_reg;   // k_reg[3:0]=K0, k_reg[7:4]=K1, ..., k_reg[31:28]=K7
     
-    // Load index for nibble-by-nibble loading
-    reg [2:0]  load_index;
+    // Separate load indices for Q and K to avoid confusion
+    // Each index auto-increments after each LOAD_Q_NIBBLE or LOAD_K_NIBBLE
+    // CMD_LOAD_CONTEXT resets BOTH indices to 0
+    reg [2:0]  q_load_index;
+    reg [2:0]  k_load_index;
     
     // Context slot (toy field to demonstrate context tracking)
     reg [3:0]  context_slot;
@@ -140,7 +143,8 @@ module sf_tensortile_core (
             state         <= STATE_IDLE;
             q_reg         <= 32'd0;
             k_reg         <= 32'd0;
-            load_index    <= 3'd0;
+            q_load_index  <= 3'd0;
+            k_load_index  <= 3'd0;
             context_slot  <= 4'd0;
             scale_shift   <= 3'd0;
             accumulator   <= 16'sd0;
@@ -163,8 +167,8 @@ module sf_tensortile_core (
                             end
                             
                             CMD_LOAD_Q_NIBBLE: begin
-                                // Load one INT4 Q value at load_index position
-                                case (load_index)
+                                // Load one INT4 Q value at q_load_index position
+                                case (q_load_index)
                                     3'd0: q_reg[3:0]   <= din;
                                     3'd1: q_reg[7:4]   <= din;
                                     3'd2: q_reg[11:8]  <= din;
@@ -174,12 +178,12 @@ module sf_tensortile_core (
                                     3'd6: q_reg[27:24] <= din;
                                     3'd7: q_reg[31:28] <= din;
                                 endcase
-                                load_index <= load_index + 1'b1;
+                                q_load_index <= q_load_index + 1'b1;
                             end
                             
                             CMD_LOAD_K_NIBBLE: begin
-                                // Load one INT4 K value at load_index position
-                                case (load_index)
+                                // Load one INT4 K value at k_load_index position
+                                case (k_load_index)
                                     3'd0: k_reg[3:0]   <= din;
                                     3'd1: k_reg[7:4]   <= din;
                                     3'd2: k_reg[11:8]  <= din;
@@ -189,13 +193,14 @@ module sf_tensortile_core (
                                     3'd6: k_reg[27:24] <= din;
                                     3'd7: k_reg[31:28] <= din;
                                 endcase
-                                load_index <= load_index + 1'b1;
+                                k_load_index <= k_load_index + 1'b1;
                             end
                             
                             CMD_LOAD_CONTEXT: begin
                                 context_slot  <= din;
                                 context_valid <= 1'b1;
-                                load_index    <= 3'd0;  // Reset load index
+                                q_load_index  <= 3'd0;  // Reset both load indices
+                                k_load_index  <= 3'd0;
                             end
                             
                             CMD_LOAD_SCALE: begin
@@ -216,7 +221,8 @@ module sf_tensortile_core (
                                 // Soft reset without full hardware reset
                                 q_reg         <= 32'd0;
                                 k_reg         <= 32'd0;
-                                load_index    <= 3'd0;
+                                q_load_index  <= 3'd0;
+                                k_load_index  <= 3'd0;
                                 context_slot  <= 4'd0;
                                 scale_shift   <= 3'd0;
                                 accumulator   <= 16'sd0;

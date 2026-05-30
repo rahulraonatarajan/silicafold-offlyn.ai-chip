@@ -1,5 +1,0 @@
-{
-    "FP_SIZING": "absolute",
-    "GRT_ALLOW_CONGESTION": true,
-    "GRT_OVERFLOW_ITERS": 100
-}

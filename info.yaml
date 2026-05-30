@@ -1,8 +1,6 @@
 # Tiny Tapeout project information
 # Learn more at https://tinytapeout.com
 
-yaml_version: 6
-
 project:
   title: "SilicaFold V0 - TensorTile + PolicyGate for Offline SLM Agents"
   author: "Rahul Rao Natarajan"
@@ -14,14 +12,15 @@ project:
   top_module: "tt_um_rahulraonatarajan_silicafold_v0"
 
   # Source files included in order of compilation
+  # Source files must be in ./src and listed separately
   source_files:
     - "sf_tensortile_core.v"
     - "sf_policygate_core.v"
     - "tt_um_rahulraonatarajan_silicafold_v0.v"
 
-# Pinout configuration
+# Pinout configuration - DO NOT delete or add any pins
 pinout:
-  # Dedicated inputs: command and data nibbles
+  # Inputs
   ui[0]: "CMD0"
   ui[1]: "CMD1"
   ui[2]: "CMD2"
@@ -31,40 +30,25 @@ pinout:
   ui[6]: "DIN2"
   ui[7]: "DIN3"
 
-  # Dedicated outputs: status bits and output data
-  # When BLOCK_SELECT=0 (TensorTile): busy, done, overflow, context_valid, result[3:0]
-  # When BLOCK_SELECT=1 (PolicyGate): allow, block, require_human, log_required, policy_out[3:0]
-  uo[0]: "T_BUSY_OR_P_ALLOW"
-  uo[1]: "T_DONE_OR_P_BLOCK"
-  uo[2]: "T_OVERFLOW_OR_P_REQUIRE_HUMAN"
-  uo[3]: "T_CTX_VALID_OR_P_LOG_REQUIRED"
-  uo[4]: "OUT0"
-  uo[5]: "OUT1"
-  uo[6]: "OUT2"
-  uo[7]: "OUT3"
+  # Outputs
+  uo[0]: "STATUS0 (TT:busy / PG:allow)"
+  uo[1]: "STATUS1 (TT:done / PG:block)"
+  uo[2]: "STATUS2 (TT:overflow / PG:require_human)"
+  uo[3]: "STATUS3 (TT:ctx_valid / PG:log_required)"
+  uo[4]: "DOUT0"
+  uo[5]: "DOUT1"
+  uo[6]: "DOUT2"
+  uo[7]: "DOUT3"
 
-  # Bidirectional IOs
-  # [3:0] are inputs, [7:4] are outputs (uio_oe = 8'b1111_0000)
-  uio[0]: "WR_STB"
-  uio[1]: "RD_STB"
-  uio[2]: "BLOCK_SELECT"
-  uio[3]: "DEBUG_MODE"
-  uio[4]: "T_CYCLE0_OR_P_POLICY_ERROR"
-  uio[5]: "T_CYCLE1_OR_P_HIGH_RISK"
-  uio[6]: "T_CYCLE2_OR_P_EMERGENCY_PATH"
-  uio[7]: "T_CYCLE3_OR_P_EVALUATED"
+  # Bidirectional pins
+  uio[0]: "WR_STB (input)"
+  uio[1]: "RD_STB (input)"
+  uio[2]: "BLOCK_SELECT (input)"
+  uio[3]: "DEBUG_MODE (input)"
+  uio[4]: "EXT0 (output: TT:cycle0 / PG:policy_error)"
+  uio[5]: "EXT1 (output: TT:cycle1 / PG:high_risk)"
+  uio[6]: "EXT2 (output: TT:cycle2 / PG:emergency_path)"
+  uio[7]: "EXT3 (output: TT:cycle3 / PG:evaluated)"
 
-# Documentation settings
-documentation:
-  inputs:
-    - "ui_in[3:0]: 4-bit command nibble (CMD)"
-    - "ui_in[7:4]: 4-bit data nibble (DIN)"
-  outputs:
-    - "uo_out[3:0]: Status bits (block-specific)"
-    - "uo_out[7:4]: Data output nibble"
-  bidirectional:
-    - "uio_in[0]: Write strobe (WR_STB)"
-    - "uio_in[1]: Read strobe (RD_STB)"
-    - "uio_in[2]: Block select (0=TensorTile, 1=PolicyGate)"
-    - "uio_in[3]: Debug mode (reserved)"
-    - "uio_out[7:4]: Extended status outputs"
+# Do not change!
+yaml_version: 6

@@ -269,8 +269,10 @@ module sf_policygate_core (
             if (rd_stb) begin
                 case (cmd)
                     CMD_READ_DECISION: begin
-                        // Pack decision bits: {require_human, block, allow, evaluated}
-                        dout <= {require_human, block, allow, evaluated};
+                        // Pack decision bits matching top-level uo_out[3:0] order:
+                        // {log_required, require_human, block, allow}
+                        // This matches the output multiplexer in the top module
+                        dout <= {log_required, require_human, block, allow};
                     end
                     
                     CMD_READ_AUDIT: begin
