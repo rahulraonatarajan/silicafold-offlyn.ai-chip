@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: Apache-2.0
+# SilicaFold V0 - Test Workflow
+# Runs Verilog syntax checks and cocotb tests
+
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Verilog Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+
+      - name: Check Verilog syntax
+        run: |
+          cd src
+          iverilog -g2005 -Wall -t null \
+            sf_tensortile_core.v \
+            sf_policygate_core.v \
+            tt_um_rahulraonatarajan_silicafold_v0.v
+          echo "Verilog syntax check passed"
+
+  test:
+    name: Cocotb Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+
+      - name: Install Python dependencies
+        run: |
+          pip install cocotb pytest
+
+      - name: Run cocotb tests
+        run: |
+          cd test
+          make SIM=icarus
+        timeout-minutes: 10
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test/results.xml
+            test/sim_build/
+          retention-days: 7

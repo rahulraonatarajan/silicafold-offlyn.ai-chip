@@ -1,0 +1,74 @@
+# Tiny Tapeout project information
+# Learn more at https://tinytapeout.com
+
+yaml_version: 6
+
+project:
+  title: "SilicaFold V0 - TensorTile + PolicyGate for Offline SLM Agents"
+  author: "Rahul Rao Natarajan"
+  discord: ""
+  description: "A Tiny Tapeout proof-of-silicon combining a folded INT4 tensor/QK primitive with a deterministic offline SLM tool-call PolicyGate."
+  language: "Verilog"
+  clock_hz: 25000000
+  tiles: "4x2"
+  top_module: "tt_um_rahulraonatarajan_silicafold_v0"
+
+  # Source files included in order of compilation
+  source_files:
+    - "sf_tensortile_core.v"
+    - "sf_policygate_core.v"
+    - "tt_um_rahulraonatarajan_silicafold_v0.v"
+
+# Pinout configuration
+# ui_in: Directly directly directly directly directly directly directly directly inputs
+# uo_out: Directly directly directly directly directly directly directly directly outputs
+# uio: Directly directly directly directly directly directly directly directly bidirectional IOs
+
+pinout:
+  # Directly directly directly directly directly directly directly directly inputs: command and data nibbles
+  ui[0]: "CMD0"
+  ui[1]: "CMD1"
+  ui[2]: "CMD2"
+  ui[3]: "CMD3"
+  ui[4]: "DIN0"
+  ui[5]: "DIN1"
+  ui[6]: "DIN2"
+  ui[7]: "DIN3"
+
+  # Directly directly directly directly directly directly directly directly outputs: status bits and output data
+  # When BLOCK_SELECT=0 (TensorTile): busy, done, overflow, context_valid, result[3:0]
+  # When BLOCK_SELECT=1 (PolicyGate): allow, block, require_human, log_required, policy_out[3:0]
+  uo[0]: "T_BUSY_OR_P_ALLOW"
+  uo[1]: "T_DONE_OR_P_BLOCK"
+  uo[2]: "T_OVERFLOW_OR_P_REQUIRE_HUMAN"
+  uo[3]: "T_CTX_VALID_OR_P_LOG_REQUIRED"
+  uo[4]: "OUT0"
+  uo[5]: "OUT1"
+  uo[6]: "OUT2"
+  uo[7]: "OUT3"
+
+  # Bidirectional IOs
+  # [3:0] are inputs, [7:4] are outputs (uio_oe = 8'b1111_0000)
+  uio[0]: "WR_STB"
+  uio[1]: "RD_STB"
+  uio[2]: "BLOCK_SELECT"
+  uio[3]: "DEBUG_MODE"
+  uio[4]: "T_CYCLE0_OR_P_POLICY_ERROR"
+  uio[5]: "T_CYCLE1_OR_P_HIGH_RISK"
+  uio[6]: "T_CYCLE2_OR_P_EMERGENCY_PATH"
+  uio[7]: "T_CYCLE3_OR_P_EVALUATED"
+
+# Documentation settings
+documentation:
+  inputs:
+    - "ui_in[3:0]: 4-bit command nibble (CMD)"
+    - "ui_in[7:4]: 4-bit data nibble (DIN)"
+  outputs:
+    - "uo_out[3:0]: Status bits (block-specific)"
+    - "uo_out[7:4]: Data output nibble"
+  bidirectional:
+    - "uio_in[0]: Write strobe (WR_STB)"
+    - "uio_in[1]: Read strobe (RD_STB)"
+    - "uio_in[2]: Block select (0=TensorTile, 1=PolicyGate)"
+    - "uio_in[3]: Debug mode (reserved)"
+    - "uio_out[7:4]: Extended status outputs"

@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Cocotb
+sim_build/
+results.xml
+*.vcd
+
+# Simulation
+*.log
+*.dump
+
+# OpenLane / GDS (large files - download from CI)
+runs/
+*.gds
+*.gds.gz
+*.def
+*.lef
+*.mag
+*.spice
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Downloaded artifacts (regenerate from CI)
+artifacts/
+
+# Temporary
+*.tmp
+*.bak
