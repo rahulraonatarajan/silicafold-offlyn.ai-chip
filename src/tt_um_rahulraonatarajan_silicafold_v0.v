@@ -41,20 +41,24 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
 
     // =========================================================================
     // uio_oe Configuration
-    // Lower nibble [3:0] are inputs, upper nibble [7:4] are outputs
-    // Use registered output to ensure proper routing in ASIC flow
+    // Lower nibble [3:0] are inputs (0), upper nibble [7:4] are outputs (1)
+    // Create routable logic paths for each bit to satisfy global routing
     // =========================================================================
-    reg [7:0] uio_oe_reg;
     
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            uio_oe_reg <= 8'b1111_0000;
-        end else begin
-            uio_oe_reg <= 8'b1111_0000;
-        end
-    end
+    // Lower 4 bits are always 0 (input mode) - tied through logic
+    // Upper 4 bits are always 1 (output mode) - tied through logic
+    // Using ena to create routable paths that still produce constant outputs
+    wire uio_oe_low  = 1'b0;  // Constant 0 for input mode
+    wire uio_oe_high = ena;   // ena is always 1, so this is always 1 for output mode
     
-    assign uio_oe = uio_oe_reg;
+    assign uio_oe[0] = uio_oe_low;
+    assign uio_oe[1] = uio_oe_low;
+    assign uio_oe[2] = uio_oe_low;
+    assign uio_oe[3] = uio_oe_low;
+    assign uio_oe[4] = uio_oe_high;
+    assign uio_oe[5] = uio_oe_high;
+    assign uio_oe[6] = uio_oe_high;
+    assign uio_oe[7] = uio_oe_high;
 
     // =========================================================================
     // TensorTile Instance
@@ -158,9 +162,10 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
 
     // =========================================================================
     // Unused Signal Handling
-    // Ensure ena and dbg_mode don't get optimized away
+    // dbg_mode is reserved for future use
+    // ena is used for uio_oe output enable
     // =========================================================================
-    wire _unused = &{ena, dbg_mode, 1'b0};
+    wire _unused = &{dbg_mode, 1'b0};
 
 endmodule
 
