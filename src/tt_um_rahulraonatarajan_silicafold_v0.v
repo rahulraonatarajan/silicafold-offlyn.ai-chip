@@ -42,8 +42,19 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
     // =========================================================================
     // uio_oe Configuration
     // Lower nibble [3:0] are inputs, upper nibble [7:4] are outputs
+    // Use registered output to ensure proper routing in ASIC flow
     // =========================================================================
-    assign uio_oe = 8'b1111_0000;
+    reg [7:0] uio_oe_reg;
+    
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            uio_oe_reg <= 8'b1111_0000;
+        end else begin
+            uio_oe_reg <= 8'b1111_0000;
+        end
+    end
+    
+    assign uio_oe = uio_oe_reg;
 
     // =========================================================================
     // TensorTile Instance
