@@ -41,20 +41,11 @@ module tt_um_rahulraonatarajan_silicafold_v0 (
 
     // =========================================================================
     // uio_oe Configuration  
-    // Lower nibble [3:0] are inputs, upper nibble [7:4] are outputs
-    // Use combinational logic through ena to create routable paths
-    // This prevents synthesis from creating unroutable tie cells
-    // When ena=1: lower nibble = ~1 = 0 (input mode)
-    //             upper nibble = 1 = 1 (output mode)  
+    // Set all bidirectional pins as outputs to simplify routing
+    // Lower nibble outputs unused data (directly 0)
+    // Upper nibble outputs extended status
     // =========================================================================
-    assign uio_oe[0] = ~ena;  // 0 when powered (input mode)
-    assign uio_oe[1] = ~ena;  // 0 when powered (input mode)
-    assign uio_oe[2] = ~ena;  // 0 when powered (input mode)
-    assign uio_oe[3] = ~ena;  // 0 when powered (input mode)
-    assign uio_oe[4] = ena;   // 1 when powered (output mode)
-    assign uio_oe[5] = ena;   // 1 when powered (output mode)
-    assign uio_oe[6] = ena;   // 1 when powered (output mode)
-    assign uio_oe[7] = ena;   // 1 when powered (output mode)
+    assign uio_oe = {8{ena}};  // All outputs when ena=1
 
     // =========================================================================
     // TensorTile Instance
