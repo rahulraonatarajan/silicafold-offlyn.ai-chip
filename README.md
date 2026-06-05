@@ -2,10 +2,12 @@
 
 **Folded TensorTile + PolicyGate for Offline SLM Agents**
 
+Part of [Offlyn.ai](https://github.com/offlyn-ai) — Useful intelligence. Fewer tokens. Lower watts.
+
 [![Test](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/workflows/test.yml/badge.svg)](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/workflows/test.yml)
 [![GDS](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/workflows/gds.yaml/badge.svg)](https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip/actions/workflows/gds.yaml)
 
-> **SilicaFold V0 helps offline SLM agents compute locally and act safely.**
+> **SilicaFold V0 helps offline SLM agents compute locally and act safely—with fewer tokens and lower watts.**
 
 ## Overview
 
@@ -16,12 +18,25 @@ SilicaFold V0 is a proof-of-silicon artifact for [Tiny Tapeout](https://tinytape
 
 This is an **educational V0 implementation**, not a production AI chip.
 
+## Why This Project Exists
+
+[Offlyn.ai](https://github.com/offlyn-ai) helps teams answer a fundamental question: **What should run locally, what should run at the edge, and what should go to the cloud?**
+
+AI cost is not only a model problem—it is a full-stack optimization problem spanning prompts, context windows, routing, caching, quantization, local inference, hardware acceleration, and compliance. SilicaFold explores the deepest layer of that stack: silicon primitives purpose-built for local AI execution with minimal resources.
+
+| Offlyn.ai Focus Area | SilicaFold Connection |
+|----------------------|----------------------|
+| **AI cost optimization** | INT4 quantization reduces memory and compute per operation |
+| **Local and edge AI** | Offline-first design—no cloud dependency for compute or authorization |
+| **Hardware-aware AI** | Silicon-level exploration of quantization and energy tradeoffs |
+| **Verification and resilience** | PolicyGate provides auditable allow/block decisions for routed workloads |
+
 ## What This Project Proves
 
-- Folded INT4 tensor computation fits in Tiny Tapeout tiles
-- Deterministic policy enforcement synthesizes cleanly in silicon
-- Separation of compute (TensorTile) from authority (PolicyGate) is architecturally viable
-- Open-source ASIC design is accessible for research
+- Folded INT4 tensor computation fits in Tiny Tapeout tiles—fewer watts per context operation
+- Deterministic policy enforcement synthesizes cleanly in silicon—no cloud round-trip for authorization
+- Separation of compute (TensorTile) from authority (PolicyGate) is architecturally viable at the hardware layer
+- Open-source ASIC design is accessible for cost-efficient AI research
 
 ## Generated GDS Layout
 
@@ -76,14 +91,16 @@ See [docs/limitations.md](docs/limitations.md) for a complete list.
 
 ## Why This Is NOT a TPU Clone
 
-SilicaFold V0 is not competing with NVIDIA, Google TPU, Apple Neural Engine, or any commercial AI accelerator. It addresses a different problem space:
+SilicaFold V0 is not competing with NVIDIA, Google TPU, Apple Neural Engine, or any commercial AI accelerator. It explores a different axis of the AI cost problem:
 
 | Commercial AI Silicon | SilicaFold V0 |
 |-----------------------|---------------|
-| Maximize TOPS/watt | Validate architectural concepts |
+| Maximize TOPS/watt | Minimize tokens and watts for local agents |
 | Datacenter/edge inference | Offline agent safety primitives |
 | Full transformer acceleration | Single QK dot product primitive |
 | Production-ready | Educational proof-of-silicon |
+
+Where commercial silicon optimizes throughput, SilicaFold asks: what is the smallest useful hardware primitive that lets an offline agent compute and act without a cloud connection?
 
 ## Architecture
 
@@ -220,7 +237,7 @@ See [docs/cost_report.md](docs/cost_report.md) for details.
 
 ## Public vs Commercial Boundary
 
-This public V0 demonstrates simplified open-silicon primitives only. The commercial opportunity is not the toy RTL alone. The commercial opportunity is the full offline SLM-agent stack: runtime integration, signed policy lifecycle, context validity, audit infrastructure, field workflows, secure deployment, and future silicon IP. Those production components are intentionally not included in this repository.
+This public V0 demonstrates simplified open-silicon primitives only. The commercial opportunity is not the toy RTL alone—it is the full Offlyn.ai stack for cost-efficient offline AI: runtime integration, workload routing, signed policy lifecycle, context validity, audit infrastructure, field workflows, secure deployment, and future silicon IP. Those production components are intentionally not included in this repository.
 
 See [docs/public_vs_commercial_boundary.md](docs/public_vs_commercial_boundary.md) and [IP_STRATEGY.md](IP_STRATEGY.md) for details.
 
@@ -310,8 +327,9 @@ Apache-2.0. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).
 ## Contact
 
 - Repository: https://github.com/rahulraonatarajan/silicafold-offlyn.ai-chip
+- Organization: [Offlyn.ai](https://github.com/offlyn-ai)
 - Author: Rahul Rao Natarajan
 
 ---
 
-*SilicaFold V0 helps offline SLM agents compute locally and act safely.*
+*SilicaFold V0 helps offline SLM agents compute locally and act safely—with fewer tokens and lower watts.*

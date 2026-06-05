@@ -4,28 +4,44 @@
 
 ### One-Liner
 
-**SilicaFold V0 helps offline SLM agents compute locally and act safely.**
+**SilicaFold V0 helps offline SLM agents compute locally and act safely—with fewer tokens and lower watts.**
 
 ### Resume Bullet
 
-> Designed SilicaFold V0, an open-silicon Tiny Tapeout prototype for offline SLM-agent infrastructure, combining a folded INT4 tensor/context primitive with a deterministic PolicyGate for chip-level allow/block/require-human/log enforcement of model-generated tool calls.
+> Designed SilicaFold V0, an open-silicon Tiny Tapeout prototype for Offlyn.ai's cost-efficient AI stack, combining a folded INT4 tensor/context primitive with a deterministic PolicyGate for chip-level allow/block/require-human/log enforcement of model-generated tool calls.
 
 ### LinkedIn Summary
 
-> Led the design of SilicaFold V0, an open-source proof-of-silicon for offline Small Language Model (SLM) agent systems. The project demonstrates two chip-level primitives: a folded INT4 tensor computation unit for efficient context operations, and a PolicyGate for hardware-assisted tool-call authorization. Submitted to Tiny Tapeout for fabrication, showcasing practical ASIC design skills and forward-thinking approaches to edge AI safety and offline operation.
+> Led the design of SilicaFold V0, an open-source proof-of-silicon for offline Small Language Model (SLM) agent systems at Offlyn.ai. The project demonstrates two chip-level primitives: a folded INT4 tensor computation unit for efficient context operations, and a PolicyGate for hardware-assisted tool-call authorization. Part of Offlyn.ai's mission to reduce AI operating costs by optimizing every layer from prompt to chip. Submitted to Tiny Tapeout for fabrication on the SKY130 process.
+
+## How SilicaFold Fits Offlyn.ai's Vision
+
+Offlyn.ai's thesis: **AI cost is not only a model problem.** It is a full-stack optimization problem across prompts, context windows, retrieval, routing, caching, quantization, local inference, edge deployment, hardware acceleration, observability, privacy, and compliance.
+
+SilicaFold addresses the hardware acceleration layer of this thesis:
+
+| Offlyn.ai Focus | SilicaFold Role |
+|-----------------|-----------------|
+| **Fewer tokens** | INT4 quantization reduces bits per operation |
+| **Lower watts** | Folded MAC minimizes silicon area and energy |
+| **Local-first** | No cloud dependency for compute or authorization |
+| **Verification** | PolicyGate provides auditable decision logging |
+
+The question Offlyn.ai helps teams answer—"What should run locally, at the edge, or in the cloud?"—requires hardware that makes local execution viable. SilicaFold explores what that hardware looks like at its simplest.
 
 ## Investor-Safe Messaging
 
 ### What to Say
 
-**SilicaFold V0 is a proof-of-silicon artifact** that validates key architectural concepts for Offlyn.ai's long-term vision of offline SLM-agent infrastructure. It demonstrates:
+**SilicaFold V0 is a proof-of-silicon artifact** that validates key architectural concepts for Offlyn.ai's long-term vision of cost-efficient offline AI. It demonstrates:
 
 1. **Separation of compute and authority** at the silicon level
-2. **Low-bit tensor primitives** suitable for resource-constrained devices
-3. **Deterministic policy enforcement** for model-generated tool calls
+2. **Low-bit tensor primitives** that reduce memory and energy per operation
+3. **Deterministic policy enforcement** for model-generated tool calls without cloud round-trips
 4. **Practical ASIC skills** through actual Tiny Tapeout submission
 
-**The commercial opportunity** is not the toy RTL in this repository. The commercial opportunity is the full offline SLM-agent stack:
+**The commercial opportunity** is not the toy RTL in this repository. The commercial opportunity is the full Offlyn.ai stack for reducing AI operating costs:
+- Cloud/local/edge workload routing
 - Runtime integration
 - Signed policy lifecycle
 - Context validity and attestation
@@ -46,14 +62,17 @@ Do NOT claim that SilicaFold V0:
 
 ### Sample Investor Talking Points
 
+**On Cost Thesis:**
+> "Every AI workload that runs locally instead of in the cloud saves tokens, latency, bandwidth, and privacy exposure. SilicaFold explores what happens when you push that optimization all the way to silicon—purpose-built primitives for the operations offline agents actually need."
+
 **On Technical Differentiation:**
-> "Most AI silicon focuses on datacenter-scale inference. SilicaFold explores a different axis: silicon primitives for offline agents that need to act safely without cloud connectivity. The V0 proves the architectural concept; commercial implementation follows."
+> "Most AI silicon maximizes TOPS for datacenters. SilicaFold asks a different question: what is the smallest useful hardware primitive that lets an offline agent compute and act without a cloud connection? The V0 proves the concept fits in Tiny Tapeout tiles; commercial optimization follows."
 
 **On IP Strategy:**
-> "The public V0 is intentionally simplified for Tiny Tapeout. It demonstrates the concept without disclosing production architecture. The valuable IP—runtime integration, policy lifecycle, secure enforcement—remains proprietary."
+> "The public V0 is intentionally simplified for Tiny Tapeout. It demonstrates the concept without disclosing production architecture. The valuable IP—workload routing, runtime integration, policy lifecycle, secure enforcement—remains proprietary."
 
 **On Market Positioning:**
-> "We're not competing with NVIDIA or Google on raw TOPS. We're addressing the specific needs of offline field agents: low power, deterministic behavior, auditable decisions, and operation without connectivity."
+> "We're not competing with NVIDIA or Google on raw TOPS. We're building infrastructure for teams that want to reduce AI operating costs by running more workloads locally and at the edge, safely and verifiably."
 
 ## Resume Context
 
@@ -133,10 +152,10 @@ A: We're not competing on TOPS/watt with NVIDIA. We're building infrastructure f
 ## Summary
 
 SilicaFold V0 is valuable as:
-1. **A learning artifact** demonstrating ASIC design skills
-2. **A proof of concept** for architectural ideas
-3. **A public showcase** for recruiting and partnerships
-4. **A foundation** for future commercial development
+1. **A hardware experiment** in Offlyn.ai's "prompt to chip" optimization thesis
+2. **A proof of concept** that local AI execution primitives are architecturally viable in silicon
+3. **A public showcase** for recruiting, partnerships, and technical credibility
+4. **A foundation** for future cost-optimized commercial silicon
 
 It is NOT:
 1. A commercial product

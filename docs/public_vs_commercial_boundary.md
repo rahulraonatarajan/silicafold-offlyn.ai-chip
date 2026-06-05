@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document clarifies what is publicly shared in this repository versus what remains proprietary to Offlyn.ai's commercial development.
+This document clarifies what is publicly shared in this repository versus what remains proprietary to [Offlyn.ai](https://github.com/offlyn-ai)'s commercial development.
+
+Offlyn.ai's mission: **Useful intelligence. Fewer tokens. Lower watts.** The organization helps teams reduce AI operating costs by optimizing every layer from prompt to chip. SilicaFold V0 is the public, educational exploration of the hardware layer within that thesis.
 
 ## Public (This Repository)
 
@@ -65,6 +67,12 @@ The following are NOT included and remain proprietary:
 - Advanced context residency algorithms
 - Memory movement optimization
 
+### Workload Routing and Cost Optimization
+- Cloud/local/edge routing algorithms
+- Token savings measurement and benchmarking
+- Cost optimization heuristics
+- Workload classification logic
+
 ### Business Systems
 - Customer deployment workflows
 - Field service integration
@@ -89,19 +97,20 @@ The following concepts may have patent potential and should be discussed with co
 When discussing with investors:
 
 ### Safe to Share
-- Public V0 demonstrates architectural feasibility
-- Tiny Tapeout provides low-cost silicon validation
-- Open-source approach builds community credibility
-- Technical skills are proven through tape-out
+- Public V0 demonstrates architectural feasibility for Offlyn.ai's "prompt to chip" optimization thesis
+- Tiny Tapeout provides low-cost silicon validation of the hardware layer
+- Open-source approach builds community credibility and positions Offlyn.ai in hardware-aware AI
+- Technical skills are proven through actual tape-out on SKY130
 
 ### Position Carefully
-- V0 is not the commercial product
-- Real value is in the full stack (runtime, policy, audit)
+- V0 is not the commercial product—it is one layer in a full-stack cost optimization thesis
+- Real value is in the complete Offlyn.ai stack (routing, runtime, policy, audit, silicon)
 - Silicon IP will be optimized and proprietary
-- Public V0 supports broader IP strategy
+- Public V0 supports broader IP strategy and answers the question: does local AI hardware make sense?
 
 ### Do Not Disclose
 - Specific commercial architecture details
+- Cloud/local/edge routing algorithms
 - Customer-specific implementations
 - Patent-pending innovations
 - Production performance targets
@@ -157,7 +166,9 @@ The GDS generated from this public repository:
 | Testbench | Public | This repo |
 | Documentation | Public | This repo |
 | Generated GDS | Public | CI artifacts |
+| Workload routing | Private | Offlyn.ai internal |
 | Production runtime | Private | Offlyn.ai internal |
 | Policy system | Private | Offlyn.ai internal |
 | Security implementation | Private | Offlyn.ai internal |
 | Optimized silicon IP | Private | Offlyn.ai internal |
+| Cost optimization logic | Private | Offlyn.ai internal |

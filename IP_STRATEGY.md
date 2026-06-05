@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document outlines the intellectual property strategy for SilicaFold V0, distinguishing between public educational content and proprietary commercial IP.
+This document outlines the intellectual property strategy for SilicaFold V0, distinguishing between public educational content and proprietary commercial IP owned by [Offlyn.ai](https://github.com/offlyn-ai).
+
+Offlyn.ai's mission is to reduce AI operating costs by optimizing every layer from prompt to chip. SilicaFold V0 is the public, educational exploration of the hardware layer. Production implementations remain proprietary.
 
 ## What Is Safe to Publish
 
@@ -91,13 +93,13 @@ When contributing to or extending this repository:
 ## Public Description Guidelines
 
 ### For Technical Audiences
-> "SilicaFold V0 is a proof-of-silicon artifact demonstrating simplified primitives for offline SLM agent systems. It includes a folded INT4 tensor computation unit and a deterministic policy gate, implemented as a Tiny Tapeout project."
+> "SilicaFold V0 is a proof-of-silicon artifact demonstrating simplified primitives for offline SLM agent systems. Part of Offlyn.ai's research into cost-efficient AI, it includes a folded INT4 tensor computation unit and a deterministic policy gate, implemented as a Tiny Tapeout project."
 
 ### For Investors
-> "SilicaFold V0 validates key architectural concepts for Offlyn.ai's offline SLM agent platform. The public V0 demonstrates feasibility without disclosing production IP. The commercial value lies in the full stack: runtime integration, secure policy enforcement, and optimized silicon IP."
+> "SilicaFold V0 validates key architectural concepts for Offlyn.ai's vision of reducing AI operating costs from prompt to chip. The public V0 demonstrates feasibility without disclosing production IP. The commercial value lies in the full stack: workload routing, runtime integration, secure policy enforcement, and optimized silicon IP."
 
 ### For Resume/LinkedIn
-> "Designed SilicaFold V0, an open-silicon Tiny Tapeout prototype for offline SLM-agent infrastructure, combining a folded INT4 tensor/context primitive with a deterministic PolicyGate for chip-level tool-call authorization."
+> "Designed SilicaFold V0 at Offlyn.ai, an open-silicon Tiny Tapeout prototype exploring hardware primitives for cost-efficient offline SLM-agent infrastructure, combining a folded INT4 tensor/context primitive with a deterministic PolicyGate for chip-level tool-call authorization."
 
 ## What NOT to Claim
 
@@ -141,5 +143,6 @@ Do not claim that SilicaFold V0:
 ## Contact
 
 For questions about IP strategy or commercial licensing:
+- Organization: [Offlyn.ai](https://github.com/offlyn-ai)
 - Internal: Contact Offlyn.ai leadership
 - External: Inquire through official Offlyn.ai channels
