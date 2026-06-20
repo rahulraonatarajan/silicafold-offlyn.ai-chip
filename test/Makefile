@@ -13,8 +13,8 @@ VERILOG_SOURCES += $(PWD)/../src/tt_um_rahulraonatarajan_silicafold_v0.v
 # Top level module
 TOPLEVEL = tt_um_rahulraonatarajan_silicafold_v0
 
-# Python test module
-MODULE = test_combined
+# Python test modules
+COCOTB_TEST_MODULES := test_combined,test_use_cases
 
 # Compiler flags for Icarus Verilog
 COMPILE_ARGS += -g2005

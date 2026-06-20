@@ -9,6 +9,8 @@ SilicaFold V0 provides two silicon primitives for offline agent systems:
 
 These are building blocks, not a complete agent stack. The host system runs the SLM, normalizes model output into structured packets, and executes or blocks actions based on PolicyGate results. This document describes five concrete scenarios showing how the primitives support real offline-agent safety patterns.
 
+Each use case below has been validated against the RTL in `test/test_use_cases.py` using cocotb simulation (Icarus Verilog). See [Simulation Validation](#simulation-validation) for measured outputs.
+
 For the decision tree and signal definitions, see [architecture.md](architecture.md). For threat analysis, see [policygate_threat_model.md](policygate_threat_model.md).
 
 ## Use Case 1: Offline Disaster-Response Assistant
@@ -17,12 +19,12 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 
 **Agent action:** Send emergency beacon (`tool_id=0x1`, safety-critical)
 
-**PolicyGate inputs:**
+**PolicyGate inputs (emergency allow path):**
 
 | Field | Value |
 |-------|-------|
 | `tool_id` | 0x1 |
-| `risk_class` | EMERGENCY (3) or HIGH (2) |
+| `risk_class` | EMERGENCY (3) |
 | `policy_ok` | 1 |
 | `context_valid` | 1 |
 | `emergency_mode` | 1 |
@@ -30,7 +32,11 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 
 **Decision:** Priority 5 — `ALLOW` + `EMERGENCY_PATH` + `LOG_REQUIRED`
 
-**Why it matters:** The responder gets immediate action without cloud connectivity. The emergency path is scoped to safety-critical tools (IDs 0x1–0x3), and every emergency evaluation is logged via `audit_counter`.
+**Validated RTL output:** `allow=1`, `emergency_path=1`, `log_required=1`, `require_human=0`, `block=0`
+
+**Priority nuance:** If the runtime classifies the action as `risk_class=HIGH` (2) instead of EMERGENCY (3), Priority 3 fires before Priority 5 even when `emergency_mode=1`. The beacon request then returns `REQUIRE_HUMAN` + `LOG_REQUIRED` instead of the emergency allow path. For immediate emergency actuation without prior human approval, the runtime must set `risk_class=EMERGENCY` (3), use `risk_class=LOW` or `MEDIUM`, or obtain `human_approved=1`.
+
+**Why it matters:** The responder gets immediate action without cloud connectivity when risk is classified as EMERGENCY. The emergency path is scoped to safety-critical tools (IDs 0x1–0x3), and every emergency evaluation is logged via `audit_counter`.
 
 ## Use Case 2: Field Drone Tool Call
 
@@ -49,6 +55,8 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 | `human_approved` | 0 |
 
 **Decision:** Priority 3 — `REQUIRE_HUMAN` + `LOG_REQUIRED`
+
+**Validated RTL output:** `require_human=1`, `log_required=1`, `high_risk=1`, `allow=0`, `block=0`
 
 **Why it matters:** High-risk physical actuation is gated on human confirmation. The drone runtime must obtain operator approval before the motor command executes, even if the SLM confidently proposes the action.
 
@@ -71,6 +79,8 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 
 **Decision:** Priority 6 (default allow) — `ALLOW` + `LOG_REQUIRED`
 
+**Validated RTL output:** `allow=1`, `log_required=1`, `require_human=0`, `block=0`
+
 **Why it matters:** The action proceeds because policy and context checks pass and risk is not HIGH. However, `offline_mode=1` combined with `risk_class >= MEDIUM` triggers mandatory logging. Every offline medium-risk export is recorded in the audit trail.
 
 ## Use Case 4: Battery-Constrained Edge Device
@@ -91,6 +101,8 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 
 **Decision:** Priority 4 — `BLOCK` + `LOG_REQUIRED`
 
+**Validated RTL output:** `block=1`, `log_required=1`, `allow=0`, `require_human=0`
+
 **Why it matters:** Power-aware policy preserves remaining battery for safety-critical operations. Nonessential tools (IDs 0x8–0xF) are blocked when `battery_low=1`, regardless of risk class.
 
 ## Use Case 5: TensorTile Context Scoring
@@ -106,20 +118,42 @@ For the decision tree and signal definitions, see [architecture.md](architecture
 5. Runtime sets `context_valid` based on the score threshold
 6. Switch to PolicyGate (`BLOCK_SELECT=1`) and evaluate the pending tool call
 
-**Combined example (mirrors `test_combined_flow`):**
+**Combined example:**
 
-1. TensorTile computes a context score with `BLOCK_SELECT=0`
-2. Runtime sets `context_valid=1` based on the score
-3. Runtime loads a high-risk tool call into PolicyGate with `BLOCK_SELECT=1`
+1. TensorTile computes context score 20 (Q/K vectors `[1,2,1,2,1,2,1,2]`) with `BLOCK_SELECT=0`
+2. TensorTile reports `done=1`, `context_valid=1`
+3. Runtime loads high-risk motor actuation (`tool_id=0x2`) into PolicyGate with `BLOCK_SELECT=1`
 4. PolicyGate returns `REQUIRE_HUMAN` because `risk_class=HIGH` and `human_approved=0`
 
+**Validated RTL output (PolicyGate phase):** `require_human=1`, `log_required=1`, `high_risk=1`, `allow=0`; TensorTile `done=1`, dot product result matches golden model (20)
+
 **Why it matters:** This demonstrates compute/authority separation on a single die. TensorTile handles the math primitive; PolicyGate handles the authorization decision. The SLM still performs reasoning — the chip assists with scoring and enforcement.
+
+## Simulation Validation
+
+All use cases were validated locally with cocotb + Icarus Verilog against `tt_um_rahulraonatarajan_silicafold_v0`. Run:
+
+```bash
+cd test && make SIM=icarus
+```
+
+**Result:** 22/22 tests pass (16 baseline + 6 use-case validation tests)
+
+| Use Case | Test | Priority | Validated Outputs |
+|----------|------|----------|-------------------|
+| 1a Disaster (EMERGENCY risk) | `test_use_case_1_disaster_response_emergency_risk` | 5 | `allow=1`, `emergency_path=1`, `log_required=1` |
+| 1b Disaster (HIGH risk nuance) | `test_use_case_1_disaster_response_high_risk_requires_human` | 3 | `require_human=1`, `log_required=1`, `emergency_path=0` |
+| 2 Field drone | `test_use_case_2_field_drone_motor_actuation` | 3 | `require_human=1`, `log_required=1`, `high_risk=1` |
+| 3 Enterprise export | `test_use_case_3_enterprise_export_offline_log` | 6 | `allow=1`, `log_required=1` |
+| 4 Battery-constrained IoT | `test_use_case_4_battery_low_nonessential_block` | 4 | `block=1`, `log_required=1` |
+| 5 Context scoring | `test_use_case_5_tensortile_context_scoring_then_policygate` | 3 (after TensorTile) | TensorTile `done=1`; PolicyGate `require_human=1`, `log_required=1` |
 
 ## Mapping Summary
 
 | Use Case | Primary Block | Priority Hit | Decision | Key Outputs |
 |----------|---------------|--------------|----------|-------------|
-| Disaster response | PolicyGate | 5 (Emergency) | ALLOW | `allow`, `emergency_path`, `log_required` |
+| Disaster response (EMERGENCY risk) | PolicyGate | 5 (Emergency) | ALLOW | `allow`, `emergency_path`, `log_required` |
+| Disaster response (HIGH risk) | PolicyGate | 3 (High risk) | REQUIRE_HUMAN | `require_human`, `log_required` |
 | Field drone | PolicyGate | 3 (High risk) | REQUIRE_HUMAN | `require_human`, `log_required` |
 | Enterprise export | PolicyGate | 6 (Default) | ALLOW + log | `allow`, `log_required` |
 | Battery-constrained IoT | PolicyGate | 4 (Battery) | BLOCK | `block`, `log_required` |
@@ -135,7 +169,7 @@ PolicyGate V0 classifies tools by ID:
 | 0x4 – 0x7 | Standard | File export (0x5) |
 | 0x8 – 0xF | Nonessential | Analytics report (0xA) |
 
-Safety-critical tools can use the emergency override path (Priority 5). Nonessential tools are blocked when battery is low (Priority 4).
+Safety-critical tools can use the emergency override path (Priority 5) when `risk_class` is not exactly HIGH or when human approval is present. Nonessential tools are blocked when battery is low (Priority 4).
 
 ## Related Documents
 
