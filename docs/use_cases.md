@@ -171,6 +171,26 @@ PolicyGate V0 classifies tools by ID:
 
 Safety-critical tools can use the emergency override path (Priority 5) when `risk_class` is not exactly HIGH or when human approval is present. Nonessential tools are blocked when battery is low (Priority 4).
 
+## Paper-Safe Interpretation
+
+These use cases demonstrate deterministic RTL behavior in simulation for a TinyTapeout-scale hardware primitive. They do not prove cryptographic security, production safety certification, tamper resistance, or complete VerifyCore system behavior.
+
+**What this validation shows:**
+
+- The PolicyGate decision tree produces consistent, predictable outputs for the documented input combinations.
+- The HIGH vs EMERGENCY risk class distinction is correctly implemented in RTL.
+- The emergency path is bounded to safety-critical tool IDs and always logs.
+- The simulation outputs match the documented decision priorities.
+
+**What this validation does not show:**
+
+- Runtime correctness (the tests assume a trusted runtime sets flags correctly).
+- Physical security (simulation does not test tamper resistance or side channels).
+- Production readiness (V0 is an educational proof-of-concept).
+- Complete VerifyCore behavior (broader architecture is not implemented).
+
+For detailed limitations, see [limitations.md](limitations.md) and [policygate_threat_model.md](policygate_threat_model.md). For the boundary between SilicaFold evidence and VerifyCore claims, see [verifycore_reference_boundary.md](verifycore_reference_boundary.md).
+
 ## Related Documents
 
 | Document | Purpose |
@@ -180,3 +200,5 @@ Safety-critical tools can use the emergency override path (Priority 5) when `ris
 | [policygate_threat_model.md](policygate_threat_model.md) | Threat landscape and defenses |
 | [limitations.md](limitations.md) | What V0 does not implement |
 | [bringup_plan.md](bringup_plan.md) | Post-silicon validation plan |
+| [verifycore_reference_boundary.md](verifycore_reference_boundary.md) | What SilicaFold can and cannot support |
+| [paper_claims_matrix.md](paper_claims_matrix.md) | Evidence-backed claim wording |

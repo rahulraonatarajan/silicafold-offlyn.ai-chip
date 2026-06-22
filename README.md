@@ -288,7 +288,7 @@ The design should not be submitted until all of the following are true:
 | Requirement | Status |
 |-------------|--------|
 | Verilog syntax check passes | Check CI |
-| cocotb tests pass (16 tests) | Check CI |
+| cocotb tests pass (22 tests) | Check CI |
 | GDS workflow passes | Check CI |
 | GDS artifact generated | Check Actions |
 | Utilization report available | Check Actions |
@@ -305,6 +305,9 @@ See [docs/current_submission_status.md](docs/current_submission_status.md) for d
 
 - [Architecture](docs/architecture.md) - Detailed block diagrams and data flow
 - [Limitations](docs/limitations.md) - What V0 does NOT do
+- [Use Cases](docs/use_cases.md) - RTL-validated offline-agent scenarios
+- [Verify Core Integration](docs/offlyn_verify_core_integration.md) - Layered architecture mapping
+- [Threat Model](docs/policygate_threat_model.md) - Threat landscape and V0 defenses
 - [Cost Report](docs/cost_report.md) - Tiny Tapeout pricing
 - [Submission Checklist](docs/submission_checklist.md) - Pre-submission verification
 - [Submission Status](docs/current_submission_status.md) - Live checklist
@@ -312,6 +315,28 @@ See [docs/current_submission_status.md](docs/current_submission_status.md) for d
 - [GDS Artifacts](docs/gds_artifacts.md) - Where to find generated outputs
 - [Local Hardening](docs/local_hardening.md) - Optional local OpenLane flow
 - [Investor/Resume Pitch](docs/investor_resume_pitch.md) - Public messaging guide
+
+## Relationship to VerifyCore
+
+SilicaFold is a narrow TinyTapeout-scale hardware primitive for policy-gated offline AI actuation. It is intended to support a hardware-backed data paper and provide evidence for future VerifyCore patent and publication work.
+
+**VerifyCore** remains the broader architecture for policy-at-actuation-boundary enforcement, including:
+
+- Signed policies and cryptographic verification
+- Context attestation via signed hash
+- Authenticated command channels
+- Hardware audit digests with cryptographic chaining
+
+SilicaFold demonstrates that a deterministic policy primitive is hardware-reducible. It does not claim to be the complete VerifyCore system and does not disclose proprietary VerifyCore implementation details.
+
+**VerifyCore Repository:** [github.com/rahulraonatarajan/offlyn-verify-core](https://github.com/rahulraonatarajan/offlyn-verify-core)
+
+For the detailed boundary between SilicaFold evidence and VerifyCore claims, see:
+
+- [VerifyCore Reference Boundary](docs/verifycore_reference_boundary.md)
+- [Patent Publication Sequence](docs/patent_publication_sequence.md)
+- [TinyTapeout Paper Readiness](docs/tinytapeout_paper_readiness.md)
+- [Paper Claims Matrix](docs/paper_claims_matrix.md)
 
 ## License
 

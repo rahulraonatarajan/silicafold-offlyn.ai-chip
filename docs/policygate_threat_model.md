@@ -165,6 +165,42 @@ Based on this threat model, the highest-priority hardening steps for future Sili
 
 See [long_term_asic_roadmap.md](long_term_asic_roadmap.md) for the V0.5 (FPGA demo) through V2 (commercial IP) timeline.
 
+## Threat Model Boundary for Paper Claims
+
+This threat model is scoped to an educational proof-of-concept. When citing this document in papers or public materials, observe these boundaries:
+
+**V0 scope (safe to claim):**
+
+- Runtime is trusted in V0. PolicyGate relies on the runtime to set flag values correctly.
+- Pins are unauthenticated in V0. Any entity with physical pin access can send commands.
+- The `audit_counter` is 4-bit and wraps at 15. It provides basic tamper evidence, not a cryptographic audit trail.
+- V0 does not prevent a compromised runtime, replay attacks, direct physical pin injection, or side-channel attacks.
+
+**V0 is not (avoid claiming):**
+
+- Production security — V0 is not hardened for adversarial deployment.
+- Cryptographic enforcement — `policy_ok` and `context_valid` are single bits with no cryptographic backing.
+- Tamper resistance — No physical countermeasures; no secure enclave.
+- Certified safety — V0 has not been evaluated against IEC 61508, ISO 26262, or any safety standard.
+
+**Safe wording for papers:**
+
+- "V0 is an educational proof-of-concept and hardware evidence artifact, not production security."
+- "The threat model assumes a trusted runtime; hardware does not independently verify flag values."
+- "V0 demonstrates deterministic policy evaluation; cryptographic enforcement is a future direction."
+
+## Patent / Publication Caution
+
+This threat model document describes **V0 limitations**, not proprietary VerifyCore defenses. Broader security claims (signed policies, context attestation, authenticated channels, hardware audit digests) belong to VerifyCore patent materials and should not be attributed to SilicaFold V0.
+
+**Before publication:**
+
+- Confirm that any security claim is traceable to V0 implementation, not future roadmap items.
+- Avoid implying that V0 mitigates threats it explicitly does not address (see Residual Risks above).
+- Coordinate with patent counsel before disclosing novel defense mechanisms that are part of VerifyCore, not V0.
+
+For the full boundary between SilicaFold evidence and VerifyCore claims, see [verifycore_reference_boundary.md](verifycore_reference_boundary.md) and [patent_publication_sequence.md](patent_publication_sequence.md).
+
 ## Related Documents
 
 | Document | Purpose |
@@ -174,3 +210,5 @@ See [long_term_asic_roadmap.md](long_term_asic_roadmap.md) for the V0.5 (FPGA de
 | [limitations.md](limitations.md) | V0 non-goals |
 | [architecture.md](architecture.md) | Decision tree and signal definitions |
 | [public_vs_commercial_boundary.md](public_vs_commercial_boundary.md) | Proprietary security IP boundary |
+| [verifycore_reference_boundary.md](verifycore_reference_boundary.md) | What SilicaFold can and cannot support |
+| [paper_claims_matrix.md](paper_claims_matrix.md) | Evidence-backed claim wording |

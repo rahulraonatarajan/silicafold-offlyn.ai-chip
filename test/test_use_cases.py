@@ -16,7 +16,6 @@ from test_combined import (
     PG_CMD_LOAD_POWER_EMERG,
     PG_CMD_LOAD_RISK_CLASS,
     PG_CMD_LOAD_TOOL_ID,
-    PG_CMD_READ_AUDIT,
     RISK_EMERGENCY,
     RISK_HIGH,
     RISK_LOW,

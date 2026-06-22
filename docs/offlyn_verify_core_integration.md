@@ -85,7 +85,7 @@ Set `BLOCK_SELECT=1` on `uio_in[2]` to route commands to PolicyGate instead of T
 SilicaFold V0 demonstrates that the architectural concept synthesizes into real silicon:
 
 - **Deterministic policy evaluation** — a priority-ordered decision tree implements in combinational logic and synthesizes cleanly on SKY130 via the Tiny Tapeout flow
-- **Correct and testable behavior** — 16/16 cocotb tests pass at RTL and gate level (see [current_submission_status.md](current_submission_status.md))
+- **Correct and testable behavior** — 22/22 cocotb tests pass at RTL and gate level (16 baseline + 6 use-case validation tests; see [current_submission_status.md](current_submission_status.md))
 - **Basic audit persistence** — `audit_counter` survives soft reset, so a state reset alone cannot zero the event count
 - **Compute/authority separation** — `BLOCK_SELECT` muxes TensorTile (compute) and PolicyGate (authority) on a single die, matching the "compute vs authority" split in [architecture.md](architecture.md)
 
@@ -139,6 +139,35 @@ Expected flow:
 
 Target FPGA platforms are listed in [long_term_asic_roadmap.md](long_term_asic_roadmap.md) (iCE40, ECP5, Arty A7). This demo is not yet implemented in the repository.
 
+## Relationship to Future VerifyCore Patent and Publication
+
+SilicaFold demonstrates one hardware-reducible primitive within the broader VerifyCore architecture. This section clarifies the boundary between SilicaFold's public evidence and VerifyCore's proprietary and patent-targeted work.
+
+**What SilicaFold provides:**
+
+- Hardware-backed feasibility evidence for a deterministic actuation-boundary policy enforcement primitive.
+- Simulation-validated RTL for a priority-ordered decision tree.
+- TinyTapeout synthesis evidence (GDS, DRC, LVS) showing the concept is silicon-reducible.
+- Use-case validation demonstrating correct HIGH vs EMERGENCY risk handling.
+
+**What SilicaFold does not disclose:**
+
+- The full production VerifyCore stack (signed policies, context attestation, networked enforcement).
+- Proprietary implementation details for cryptographic policy verification.
+- Runtime integration beyond the trusted flag-setting model.
+- Commercial deployment architecture or operational procedures.
+
+**Publication and patent coordination:**
+
+- SilicaFold is intended as a narrow hardware-backed data paper for TinyTapeout.
+- Broader cryptographic, runtime, and networked enforcement claims belong to VerifyCore patent filings and future VerifyCore papers.
+- Public disclosure of broader claims should be coordinated with patent counsel before publication.
+- SilicaFold should be cited as supporting feasibility evidence where accurate, not as the complete VerifyCore implementation.
+
+**VerifyCore repository:** [github.com/rahulraonatarajan/offlyn-verify-core](https://github.com/rahulraonatarajan/offlyn-verify-core)
+
+For detailed claim boundaries, see [verifycore_reference_boundary.md](verifycore_reference_boundary.md) and [patent_publication_sequence.md](patent_publication_sequence.md).
+
 ## Related Documents
 
 | Document | Purpose |
@@ -148,3 +177,5 @@ Target FPGA platforms are listed in [long_term_asic_roadmap.md](long_term_asic_r
 | [use_cases.md](use_cases.md) | Concrete offline-agent scenarios |
 | [limitations.md](limitations.md) | What V0 does not implement |
 | [public_vs_commercial_boundary.md](public_vs_commercial_boundary.md) | Public vs proprietary IP boundary |
+| [verifycore_reference_boundary.md](verifycore_reference_boundary.md) | What SilicaFold can and cannot support |
+| [patent_publication_sequence.md](patent_publication_sequence.md) | Publication and patent coordination |
